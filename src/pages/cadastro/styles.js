@@ -133,3 +133,12 @@ export const Conteudo2 = styled.div`
     min-height: auto; /* Mínimo da altura, por padrão “auto” */
   }
 `;
+
+export const Camps = styled.div`
+  width: 100%;
+  display: flex;
+
+  & > div:not(:last-child) {
+    margin-right: 20px;
+  }
+`;
