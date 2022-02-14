@@ -15,48 +15,51 @@ import logo from "../../assets/clip-message-sent 1.png";
 import { Form } from "@unform/web";
 import { useCallback, useRef } from "react";
 import * as Yup from "yup";
-import api from "../../services/api";
+import { useAutenticacao } from "../../hooks/autenticacao";
 import { useNavigate } from "react-router-dom";
-function Cadastro() {
+
+function Login() {
   const formRef = useRef(null);
+  const { login } = useAutenticacao();
   const navigate = useNavigate();
+
   const options = [
     { label: "Cliente", value: "C" },
     { label: "Deliveryman", value: "D" },
   ];
 
-  const inputForms = useCallback(async (data) => {
-    /* console.log(data); */
-    try {
-      const schema = Yup.object().shape({
-        usuario: Yup.string()
-          .email("Email Incorreto")
-          .required("email não informador"),
-        senha: Yup.string().required("senha não informada"),
-        categoria: Yup.string().required("Categoria não informada"),
-      });
-      await schema.validate(data, {
-        abortEarly: false,
-      });
-      console.log(data);
-      const response = await api.post("clients", {
-        username: data.usuario,
-        password: data.senha,
-      });
-      console.log("Cliente cadastrado com sucesso: ", response.data);
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const erros = {};
-        err.inner.forEach((error) => {
-          erros[error.path] = error.message;
+  const inputForms = useCallback(
+    async (data) => {
+      /* console.log(data); */
+      try {
+        const schema = Yup.object().shape({
+          usuario: Yup.string()
+            .email("Email Incorreto")
+            .required("email não informador"),
+          senha: Yup.string().required("senha não informada"),
+          categoria: Yup.string().required("Categoria não informada"),
         });
-        console.log(erros);
-        formRef.current?.setErrors(erros);
-        return;
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+        console.log(data);
+        await login(data);
+        navigate("/dashboard");
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const erros = {};
+          err.inner.forEach((error) => {
+            erros[error.path] = error.message;
+          });
+          console.log(erros);
+          formRef.current?.setErrors(erros);
+          return;
+        }
+        console.log(err.response.data);
       }
-      console.log(err.response.data);
-    }
-  });
+    },
+    [login]
+  );
 
   return (
     <>
@@ -86,16 +89,8 @@ function Cadastro() {
                 <Radio name="categoria" options={options} />
               </Camps>
               <ButtonGroup>
-                <Button> Cadastrar</Button>
-                <Button
-                  name="secundary"
-                  onClick={() => {
-                    navigate("/login");
-                  }}
-                >
-                  {" "}
-                  Login
-                </Button>
+                <Button> Login</Button>
+                <Button name="secundary"> Realizar Cadastro</Button>
               </ButtonGroup>
             </Form>
             <ul>
@@ -130,4 +125,4 @@ function Cadastro() {
   );
 }
 
-export default Cadastro;
+export default Login;
