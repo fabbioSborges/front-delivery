@@ -28,7 +28,7 @@ const Radio = ({ name, options, ...rest }) => {
     <>
       <Container>
         {options.map((option, index) => (
-          <Label key={option.id}>
+          <Label key={index}>
             <input
               ref={(ref) => ref && (inputRefs.current[index] = ref)}
               id={option.id}

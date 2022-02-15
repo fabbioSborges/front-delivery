@@ -11,22 +11,18 @@ import api from "../services/api.js";
 const ContextoAutenticacao = createContext(null);
 
 export const AutenticacaoProvider = ({ children }) => {
-  /* const [data, setData] = useState(null); */
-  /* const [data, setData] = useState(() => {
-    const token = localStorage.getItem("@app:token");
-    /* const user = localStorage.getItem("@app:user"); 
-    if (token) {
-      api.defaults.headers.authorization = `Bearer ${token}`;
-      return { token };
-    }
-    return {};
-  }); */
+  const [authenticated, setauthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const token = localStorage.getItem("@app:token");
     if (token) {
       api.defaults.headers.authorization = `Bearer ${JSON.parse.token}`;
+      setauthenticated(true);
     }
+    setLoading(false);
   }, []);
+
   async function login({ usuario, senha }) {
     console.log("cadastro");
     console.log({ usuario, senha });
@@ -40,7 +36,7 @@ export const AutenticacaoProvider = ({ children }) => {
     localStorage.setItem("@app:token", JSON.stringify(response.data));
     /* localStorage.setItem("@app:user", JSON.stringify(user)); */
     api.defaults.headers.authorization = `Bearer ${response.data}`;
-
+    setauthenticated(true);
     /* setData({ token: response.data }); */
     /* console.log({ token, user }); */
   }
@@ -51,9 +47,12 @@ export const AutenticacaoProvider = ({ children }) => {
 
     /* setData({}); */
   }, []);
+  console.log(authenticated);
 
   return (
-    <ContextoAutenticacao.Provider value={{ token: data.token, login, logoff }}>
+    <ContextoAutenticacao.Provider
+      value={{ authenticated, login, logoff, loading }}
+    >
       {children}
     </ContextoAutenticacao.Provider>
   );

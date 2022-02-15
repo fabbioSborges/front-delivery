@@ -18,7 +18,47 @@ import { useAutenticacao } from "../hooks/autenticacao";
   return <Route {...rest} />;
 } */
 
-function CustomRoute({ children }) {
+function CustomRoute({ children, isPrivate, ...rest }) {
+  const { authenticated, loading } = useAutenticacao();
+
+  let location = useLocation();
+  if (loading) {
+    return <h1>Loading...</h1>;
+  }
+
+  console.log("authenticated", authenticated);
+  console.log("Private", isPrivate);
+  console.log(isPrivate === authenticated);
+  /* return isPrivate === !authenticated ? (
+    children
+  ) : (
+    <Navigate
+      to={{
+        pathname: isPrivate ? "/login" : "/home",
+        state: { from: location },
+      }}
+    />
+  ); */
+  /*  if (isPrivate) {
+    if (authenticated) {
+      return children;
+    } else {
+      return <Navigate to="/login" {...rest} state={{ from: location }} />;
+    }
+  } else {
+    if (authenticated) {
+      return <Navigate to="/dashboard" {...rest} state={{ from: location }} />;
+    } else {
+      return <Navigate to="/login" {...rest} />;
+    }
+  } */
+  if (isPrivate && !authenticated) {
+    console.log("authenticated", authenticated);
+    console.log("Private", isPrivate);
+    return <Navigate to="/login" {...rest} state={{ from: location }} />;
+  }
+
+  return children;
   /*  const { token } = useAutenticacao();
   console.log("token: ", token);
   let location = useLocation();
@@ -29,14 +69,13 @@ function CustomRoute({ children }) {
    
   }
  */
-  return children;
 }
 
 function Rotas() {
   return (
     <Routes>
       <Route
-        path="/home"
+        path="/"
         exact
         element={
           <CustomRoute>
@@ -55,7 +94,7 @@ function Rotas() {
       <Route
         path="/dashboard"
         element={
-          <CustomRoute>
+          <CustomRoute isPrivate>
             <Dashboard />
           </CustomRoute>
         }
