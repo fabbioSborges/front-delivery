@@ -5,6 +5,7 @@ import React, {
   useContext,
   useCallback,
 } from "react";
+import { useNavigate } from "react-router-dom";
 
 import api from "../services/api.js";
 
@@ -14,6 +15,7 @@ export const AutenticacaoProvider = ({ children }) => {
   const [authenticated, setauthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("@app:token");
     if (token) {
@@ -42,7 +44,9 @@ export const AutenticacaoProvider = ({ children }) => {
   }
 
   const logoff = useCallback(() => {
-    localStorage.removeItem("@aplicacao:token");
+    localStorage.removeItem("@app:token");
+
+    navigate("/");
     /* localStorage.removeItem("@aplicacao:user"); */
 
     /* setData({}); */
