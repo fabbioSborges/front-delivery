@@ -17,7 +17,12 @@ import Button from "../../components/button";
 import Modal from "../../components/modal";
 import DatePicker from "react-date-picker";
 import { useNavigate } from "react-router-dom";
+
+import { usePedidos } from "../../hooks/listPedidos";
+
 function Dashboard() {
+  const { pedidosCadastrados, pedidos } = usePedidos();
+
   const [deliveries, setDeliveries] = useState([]);
   const [deliveryman, setDeliveryman] = useState([]);
   const [entregues, setEntregues] = useState([]);
@@ -26,27 +31,30 @@ function Dashboard() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
-
   useEffect(() => {
     const res = async () => {
-      const { data } = await api.get("clients/deliveries");
-      setUser(data[0].username);
-      //console.log(data[0].Deliveries);
-      const deliveryRealizados = data[0].Deliveries.filter(
-        (delivery) => delivery.id_deliveryman == null
-      );
-      const comDeliveryman = data[0].Deliveries.filter(
-        (delivery) => delivery.id_deliveryman != null && delivery.end_at == null
-      );
-      const resultEntregue = data[0].Deliveries.filter(
-        (delivery) => delivery.end_at != null
-      );
-      setDeliveries([...deliveryRealizados]);
-      setDeliveryman([...comDeliveryman]);
-      setEntregues([...resultEntregue]);
+      await pedidosCadastrados();
     };
     res();
   }, []);
+
+  useEffect(() => {
+    setUser("fabio");
+    const deliveryRealizados = pedidos.filter(
+      (delivery) => delivery.id_deliveryman == null
+    );
+    const comDeliveryman = pedidos.filter(
+      (delivery) => delivery.id_deliveryman != null && delivery.end_at == null
+    );
+    const resultEntregue = pedidos.filter(
+      (delivery) => delivery.end_at != null
+    );
+    setDeliveries([...deliveryRealizados]);
+    setDeliveryman([...comDeliveryman]);
+    setEntregues([...resultEntregue]);
+    console.log(pedidos);
+  }, [pedidos]);
+
   return (
     <Container>
       <Cabecalho user={user} />

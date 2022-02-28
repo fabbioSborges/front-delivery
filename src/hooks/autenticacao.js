@@ -19,7 +19,7 @@ export const AutenticacaoProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("@app:token");
     if (token) {
-      api.defaults.headers.authorization = `Bearer ${JSON.parse.token}`;
+      api.defaults.headers.authorization = `Bearer ${JSON.parse(token)}`;
       setauthenticated(true);
     }
     setLoading(false);

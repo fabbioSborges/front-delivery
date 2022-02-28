@@ -4,11 +4,13 @@ import { Routes } from "react-router-dom";
 import Cadastro from "../pages/cadastro/index";
 import Login from "../pages/login/index";
 import Dashboard from "../pages/dashboard/index";
+import Dashboards from "../pages/dashboards/index";
 
 /* import Route from "./routes"; */
 import { Route, Navigate, useLocation } from "react-router-dom";
 
 import { useAutenticacao } from "../hooks/autenticacao";
+import { PedidosProvider } from "../hooks/listPedidos";
 
 /* function CustomRoute({ isPrivate, ...rest }) {
   const { token } = useAutenticacao();
@@ -96,6 +98,16 @@ function Rotas() {
         element={
           <CustomRoute isPrivate>
             <Dashboard />
+          </CustomRoute>
+        }
+      />
+      <Route
+        path="/dashboards"
+        element={
+          <CustomRoute isPrivate>
+            <PedidosProvider>
+              <Dashboards />
+            </PedidosProvider>
           </CustomRoute>
         }
       />

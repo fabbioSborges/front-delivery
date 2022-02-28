@@ -7,7 +7,7 @@ import { Container, Conteudo, Perfil } from "./styles";
 import { useAutenticacao } from "../../hooks/autenticacao";
 import { FiPower } from "react-icons/fi";
 
-function Cabecalho() {
+function Cabecalho({ user }) {
   const { logoff } = useAutenticacao();
   return (
     <Container>
@@ -21,7 +21,7 @@ function Cabecalho() {
         <Perfil>
           <div>
             <span>Bem Vindo</span>
-            <strong> Usuario</strong>
+            <strong> {user}</strong>
           </div>
         </Perfil>
         <button type="button" onClick={logoff}>
